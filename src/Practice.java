@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +117,30 @@ public class Practice {
    * @return a sorted list of all reachable vertex values
    */
   public static List<Integer> sortedReachable(Map<Integer, Set<Integer>> graph, int starting) {
-    return null;
+
+    Set<Integer> visited = new HashSet<>();
+    List<Integer> allReachable = new ArrayList<>();
+
+    sRMapHelper(graph, starting, visited, allReachable);
+
+    Collections.sort(allReachable);
+
+    return allReachable;
+  }
+
+  private static void sRMapHelper(Map<Integer, Set<Integer>> graph, int starting, Set<Integer> visited, List<Integer> allReachable) {
+
+    if(!graph.containsKey(starting) || graph == null) {
+      return;
+    }
+
+    visited.add(starting);
+    allReachable.add(starting);
+
+    for (var neighbor : graph.get(starting)) {
+      sRMapHelper(graph, neighbor, visited, allReachable);
+    }
+
   }
 
   /**
@@ -138,6 +160,38 @@ public class Practice {
    *         otherwise
    */
   public static <T> boolean twoWay(Vertex<T> v1, Vertex<T> v2) {
+    
+    Set<T> v1Visited = new HashSet<>();
+    Set<T> v2Visited = new HashSet<>();
+
+    boolean v1ReachV2 = tWHelper(v1, v2, v1Visited);
+    boolean v2ReachV1 = tWHelper(v2, v1, v2Visited);
+
+    return v1ReachV2 && v2ReachV1;
+  }
+
+  private static <T> boolean tWHelper(Vertex<T> starting, Vertex<T> target, Set<T> visited) {
+
+    if (starting == null || target == null) {
+      return false;
+    }
+
+    if (visited.contains(starting.data)) {
+      return false;
+    }
+
+    visited.add(starting.data);
+
+    if (starting.equals(target)) {
+      return true;
+    }
+
+    for (var neighbor : starting.neighbors) {
+      if (tWHelper(neighbor, target, visited)) {
+        return true;
+      }
+    }
+
     return false;
   }
 
@@ -158,6 +212,34 @@ public class Practice {
    * @return whether there exists a valid positive path from starting to ending
    */
   public static boolean positivePathExists(Map<Integer, Set<Integer>> graph, int starting, int ending) {
+
+    Set<Integer> visited = new HashSet<>();
+
+    return pPEHelper(graph, starting, ending, visited);
+  }
+
+  private static boolean pPEHelper(Map<Integer, Set<Integer>> graph, int starting, int ending, Set<Integer> visited) {
+
+    if (!graph.containsKey(starting) || !graph.containsKey(ending) || graph == null || starting < 0 || ending < 0) {
+      return false;
+    }
+
+    if (visited.contains(starting)) {
+      return false;
+    }
+
+    if (starting == ending) {
+      return true;
+    }
+
+    visited.add(starting);
+
+    for (var neighbor : graph.get(starting)) {
+      if (pPEHelper(graph, neighbor, ending, visited)) {
+        return true;
+      }
+    }
+
     return false;
   }
 
@@ -174,6 +256,29 @@ public class Practice {
    *         company, false otherwise
    */
   public static boolean hasExtendedConnectionAtCompany(Professional person, String companyName) {
+
+    Set<Professional> visited =  new HashSet<>();
+
+    return hECACHelper(person, companyName, visited);
+  }
+
+  private static boolean hECACHelper(Professional person, String companyName, Set<Professional> visited) {
+    if (person == null || visited.contains(person)) {
+      return false;
+    }
+
+    if (person.getCompany() == companyName) {
+      return true;
+    }
+
+    visited.add(person);
+
+    for (Professional connection : person.getConnections()) {
+      if (hECACHelper(connection, companyName, visited)) {
+        return true;
+      }
+    }
+
     return false;
   }
 }
