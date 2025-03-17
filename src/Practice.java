@@ -84,6 +84,10 @@ public class Practice {
   public static List<Integer> sortedReachable(Vertex<Integer> starting) {
     // Unimplemented: perform a depth-first search and sort the collected values.
 
+    if (starting == null) {
+      return new ArrayList<>();
+    }
+
     Set<Vertex<Integer>> visited = new HashSet<>();
     List<Integer> allVertexes = new ArrayList<>();
 
