@@ -33,29 +33,33 @@ public class Practice {
   public static int oddVertices(Vertex<Integer> starting) {
 
     Set<Integer> visited = new HashSet<>();
-    oVHelper(starting, visited);
 
-    int oddTracker = 0;
-
-    for (var num : visited) {
-      if (num % 2 == 1) {
-        oddTracker++;
-      }
-    }
-    return oddTracker;
+    return oVHelper(starting, visited);
   }
 
-  private static void oVHelper(Vertex<Integer> starting, Set<Integer> visited) {
+  private static int oVHelper(Vertex<Integer> starting, Set<Integer> visited) {
 
-    if (starting == null || !visited.add(starting.data)) {
-      return;
+    if (starting == null) {
+      return 0;
     }
+
+    if (visited.contains(starting.data)) {
+      return 0;
+    };
 
     visited.add(starting.data);
 
-    for (var neighbor : starting.neighbors) {
-      oVHelper(neighbor, visited);
+    int oddTracker = 0;
+    
+    if (starting.data % 2 == 1) {
+      oddTracker++;
     }
+
+    for (var neighbor : starting.neighbors) {
+      oddTracker += oVHelper(neighbor, visited);
+    }
+
+    return oddTracker;
   }
 
   /**
